@@ -28,7 +28,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControll
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -59,7 +59,7 @@ class ControllerResolver extends BaseControllerResolver
 
         list($class, $method) = explode('::', $controller, 2);
 
-        if (!class_exists($class)) {
+        if (!class_exists($class) && !$this->container->has($class)) {
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
@@ -105,7 +105,7 @@ class ControllerResolver extends BaseControllerResolver
             // annotations, we need to bail out as this is handled by the service
             // container directly.
             if (null !== $metadata->getOutsideClassMetadata()->id
-                    && 0 !== strpos($metadata->getOutsideClassMetadata()->id, '_jms_di_extra.unnamed.service')) {
+                && 0 !== strpos($metadata->getOutsideClassMetadata()->id, '_jms_di_extra.unnamed.service')) {
                 return;
             }
 
@@ -152,7 +152,7 @@ class ControllerResolver extends BaseControllerResolver
         $config = $container->getCompilerPassConfig();
         $config->setOptimizationPasses(array());
         $config->setRemovingPasses(array());
-        $config->addPass(new ResolveDefinitionTemplatesPass());
+        $config->addPass(new ResolveChildDefinitionsPass());
         $config->addPass(new PointcutMatchingPass($this->container->get('jms_aop.pointcut_container')->getPointcuts()));
         $config->addPass(new InlineServiceDefinitionsPass());
         $container->compile();

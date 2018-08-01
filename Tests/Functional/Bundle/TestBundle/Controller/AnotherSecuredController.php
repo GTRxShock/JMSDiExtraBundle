@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller;
+namespace JMS\DiExtraBundle\Tests\Functional\Bundle\LegacyTestBundle\Controller;
 
-use JMS\SecurityExtraBundle\Annotation\Secure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * Secured Controller.
@@ -30,7 +30,7 @@ class AnotherSecuredController
 {
     /**
      * @Route("/secure-action")
-     * @Secure("ROLE_FOO")
+     * @Security("hash_role('ROLE_FOO')")
      */
     public function secureAction()
     {

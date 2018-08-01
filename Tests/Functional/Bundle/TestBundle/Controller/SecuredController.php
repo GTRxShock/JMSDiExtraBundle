@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller;
+namespace JMS\DiExtraBundle\Tests\Functional\Bundle\LegacyTestBundle\Controller;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation\Secure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
@@ -29,7 +29,7 @@ class SecuredController
 {
     /**
      * @Route("/lookup-method-and-aop")
-     * @Secure("ROLE_FOO")
+     * @Security("has_role('ROLE_FOO')")
      */
     public function secureAction()
     {
