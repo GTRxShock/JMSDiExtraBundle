@@ -76,7 +76,13 @@ class ControllerResolver extends BaseControllerResolver
     protected function instantiateController($class)
     {
         if ($this->container->has($class)) {
-            return $this->container->get($class);
+            $controller = $this->container->get($class);
+
+            if ($controller instanceof ContainerAwareInterface) {
+                $controller->setContainer($this->container);
+            }
+
+            return $controller;
         }
 
         $injector = $this->createInjector($class);
